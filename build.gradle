@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'uwu.misaka'
+version '1.0-hentai'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven{ url 'https://jitpack.io' }
+}
+
+ext{
+    mindustryVersion = 'v127.2'
+}
+
+dependencies {
+    compile "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    compile "com.github.Anuken.Mindustry:core:$mindustryVersion"
+}
