@@ -1,12 +1,11 @@
 package uwu.misaka;
 
-import arc.Core;
 import arc.files.Fi;
-import arc.graphics.g2d.TextureAtlas;
-import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
 import arc.struct.StringMap;
 import arc.util.io.CounterInputStream;
+import mindustry.content.Blocks;
+import mindustry.gen.Building;
 import mindustry.io.MapIO;
 import mindustry.io.SaveIO;
 import mindustry.io.SaveVersion;
@@ -50,7 +49,9 @@ public class Service {
             CachedTile tile = new CachedTile() {
                 @Override
                 public void setBlock(Block type) {
-                    System.out.println(type.name + " tile " + this.x + " " + this.y);
+                    if (type != Blocks.air) {
+                        System.out.println(type.name + " tile " + this.x + " " + this.y);
+                    }
                 }
             };
 
@@ -59,7 +60,7 @@ public class Service {
                 public Tile tile(int index) {
                     tile.x = (short) (index % width);
                     tile.y = (short) (index / width);
-
+                    tile.build = Building.create();
                     return tile;
                 }
 
@@ -70,7 +71,6 @@ public class Service {
 
                 @Override
                 public Tile create(int x, int y, int floorID, int overlayID, int wallID) {
-                    //System.out.println(x+" "+y+" "+floorID+" "+overlayID+" "+wallID);
                     CachedTile t = new CachedTile();
                     rtn.add(new FakeTile(x, y, floorID, overlayID, wallID));
                     return t;
@@ -87,7 +87,6 @@ public class Service {
 
                 @Override
                 public void end() {
-
                 }
             }));
         } catch (Exception e) {
@@ -96,26 +95,7 @@ public class Service {
         return rtn;
     }
 
-    public static BufferedImage get(TextureRegion region) {
-        System.out.println(((TextureAtlas.AtlasRegion) region).name);
-        return Entry.parser.regions.get(((TextureAtlas.AtlasRegion) region).name);
-    }
-
-    public static BufferedImage get(String name) {
-        return Entry.parser.regions.get(name);
-    }
-
-    public static BufferedImage getMyPic(TextureAtlas.AtlasRegion rg) {
-        return Entry.parser.regions.get(rg.name);
-    }
-
     public static BufferedImage getMyPic(String rg) throws IOException {
         return ImageIO.read(Parser.imageFiles.get(rg).file());
-    }
-
-    public static TextureAtlas.AtlasRegion tget(String region) {
-        //System.out.println(region);
-        System.out.println("!" + Core.atlas.getRegionMap().get(region).toString());
-        return Core.atlas.getRegionMap().get(region);
     }
 }

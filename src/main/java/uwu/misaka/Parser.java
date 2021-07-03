@@ -9,7 +9,6 @@ import arc.graphics.TextureData;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
-import arc.struct.Seq;
 import arc.struct.StringMap;
 import arc.util.io.CounterInputStream;
 import mindustry.Vars;
@@ -20,8 +19,6 @@ import mindustry.core.Version;
 import mindustry.core.World;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
-import mindustry.entities.units.BuildPlan;
-import mindustry.game.Schematic;
 import mindustry.game.Team;
 import mindustry.io.MapIO;
 import mindustry.io.SaveIO;
@@ -183,23 +180,6 @@ public class Parser {
         return copy;
     }
 
-    public BufferedImage previewSchematic(Schematic schem) throws Exception {
-        BufferedImage image = new BufferedImage(schem.width * 32, schem.height * 32, BufferedImage.TYPE_INT_ARGB);
-
-        Seq<BuildPlan> requests = schem.tiles.map(t -> new BuildPlan(t.x, t.y, t.rotation, t.block, t.config));
-        currentGraphics = image.createGraphics();
-        currentImage = image;
-        requests.each(req -> {
-            req.animScale = 1f;
-            req.worldContext = false;
-            req.block.drawRequestRegion(req, requests);
-            Draw.reset();
-        });
-        requests.each(req -> req.block.drawRequestConfigTop(req, requests));
-        ImageIO.write(image, "png", new File("out.png"));
-
-        return image;
-    }
 
     public Map readMap(InputStream is) throws IOException {
         try (InputStream ifs = new InflaterInputStream(is); CounterInputStream counter = new CounterInputStream(ifs); DataInputStream stream = new DataInputStream(counter)) {
@@ -388,15 +368,5 @@ public class Parser {
             this.x = x;
             this.y = y;
         }
-    }
-
-    private BufferedImage pixmapClowned(Pixmap pixmap) {
-        BufferedImage img = new BufferedImage(pixmap.width, pixmap.height, BufferedImage.TYPE_4BYTE_ABGR);
-        for (int x = 0; x < pixmap.width; x++) {
-            for (int y = 0; y < pixmap.width; y++) {
-                img.setRGB(x, y, pixmap.get(x, y));
-            }
-        }
-        return img;
     }
 }
