@@ -52,12 +52,17 @@ public class Parser {
     Graphics2D currentGraphics;
     Color co = new Color();
     BufferedImage currentImage;
+    public static ObjectMap<String, Fi> imageFiles = new ObjectMap<>();
 
     public Parser() {
+        ObjectMap<TextureAtlas.TextureAtlasData.AtlasPage, BufferedImage> images = new ObjectMap<>();
+        regions = new ObjectMap<>();
+
+
         Version.enabled = false;
         Vars.content = new ContentLoader();
         Vars.content.createBaseContent();
-        for (ContentType type : ContentType.values()) {
+        for (ContentType type : ContentType.all) {
             for (Content content : Vars.content.getBy(type)) {
                 try {
                     content.init();
@@ -66,13 +71,16 @@ public class Parser {
             }
         }
 
+        new Fi("sprites_out").walk(f -> {
+            if (f.extEquals("png")) {
+                imageFiles.put(f.nameWithoutExtension(), f);
+            }
+        });
+
         Vars.state = new GameState();
 
         TextureAtlas.TextureAtlasData data = new TextureAtlas.TextureAtlasData(new Fi("sprites/sprites.aatls"), new Fi("sprites"), false);
         Core.atlas = new TextureAtlas();
-
-        ObjectMap<TextureAtlas.TextureAtlasData.AtlasPage, BufferedImage> images = new ObjectMap<>();
-        regions = new ObjectMap<>();
 
         data.getPages().each(page -> {
             page.texture = Texture.createEmpty(null);
@@ -124,6 +132,7 @@ public class Parser {
             for (Content content : Vars.content.getBy(type)) {
                 try {
                     content.load();
+                    content.loadIcon();
                 } catch (Throwable ignored) {
                 }
             }
@@ -379,5 +388,15 @@ public class Parser {
             this.x = x;
             this.y = y;
         }
+    }
+
+    private BufferedImage pixmapClowned(Pixmap pixmap) {
+        BufferedImage img = new BufferedImage(pixmap.width, pixmap.height, BufferedImage.TYPE_4BYTE_ABGR);
+        for (int x = 0; x < pixmap.width; x++) {
+            for (int y = 0; y < pixmap.width; y++) {
+                img.setRGB(x, y, pixmap.get(x, y));
+            }
+        }
+        return img;
     }
 }

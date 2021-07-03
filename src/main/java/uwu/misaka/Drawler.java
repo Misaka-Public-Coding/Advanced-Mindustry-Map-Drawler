@@ -8,6 +8,7 @@ import mindustry.core.World;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class Drawler {
     public Seq<FakeTile> tiles = new Seq<>();
@@ -23,16 +24,14 @@ public class Drawler {
         tt.each(t -> tiles.add(t));
         System.out.println(x_size + " " + y_size);
         image = new BufferedImage(x_size * 32, y_size * 32, BufferedImage.TYPE_INT_ARGB);
-        //pixmap = new Pixmap(x_size*32,y_size*32);
+        pixmap = new Pixmap(x_size * 32, y_size * 32);
         drawFloor();
+        drawOverlay();
         drawBlocks();
         try {
-            File file = new File("output.png");
-            file.createNewFile();
-            ImageIO.write(image, "png", file);
+            ImageIO.write(image, "png", new File("baka.png"));
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Save err");
         }
         System.out.println("done");
     }
@@ -42,8 +41,12 @@ public class Drawler {
             if (t.floor == Blocks.air) {
                 continue;
             }
-            //image.getGraphics().drawImage(Service.get(t.floor.teamRegion),t.x*32,t.y*32,null);
-            image.getGraphics().drawImage(Service.get(t.floor.name), t.x * 32, t.y * 32, null);
+            try {
+                image.getGraphics().drawImage(Service.getMyPic(t.floor.region.toString()), t.x * 32, t.y * 32, null);
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
+                break;
+            }
         }
     }
 
@@ -52,8 +55,12 @@ public class Drawler {
             if (t.overlay == Blocks.air) {
                 continue;
             }
-            //image.getGraphics().drawImage(Service.get(t.overlay.teamRegion),t.x*32,t.y*32,null);
-            image.getGraphics().drawImage(Service.get(t.overlay.name), t.x * 32, t.y * 32, null);
+            try {
+                image.getGraphics().drawImage(Service.getMyPic(t.overlay.region.toString()), t.x * 32, t.y * 32, null);
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
+                break;
+            }
         }
     }
 
@@ -63,10 +70,10 @@ public class Drawler {
                 continue;
             }
             try {
-                //image.getGraphics().drawImage(Service.get(t.wall.teamRegion), t.x * 32, t.y * 32, null);
-                image.getGraphics().drawImage(Service.get(t.wall.name), t.x * 32, t.y * 32, null);
-            } catch (NullPointerException e) {
-                System.out.println(t.wall.name);
+                image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * 32, t.y * 32, null);
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
+                break;
             }
         }
     }

@@ -1,5 +1,6 @@
 package uwu.misaka;
 
+import arc.Core;
 import arc.files.Fi;
 import arc.graphics.g2d.TextureAtlas;
 import arc.graphics.g2d.TextureRegion;
@@ -15,6 +16,7 @@ import mindustry.world.CachedTile;
 import mindustry.world.Tile;
 import mindustry.world.WorldContext;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -57,6 +59,7 @@ public class Service {
                 public Tile tile(int index) {
                     tile.x = (short) (index % width);
                     tile.y = (short) (index / width);
+
                     return tile;
                 }
 
@@ -100,5 +103,19 @@ public class Service {
 
     public static BufferedImage get(String name) {
         return Entry.parser.regions.get(name);
+    }
+
+    public static BufferedImage getMyPic(TextureAtlas.AtlasRegion rg) {
+        return Entry.parser.regions.get(rg.name);
+    }
+
+    public static BufferedImage getMyPic(String rg) throws IOException {
+        return ImageIO.read(Parser.imageFiles.get(rg).file());
+    }
+
+    public static TextureAtlas.AtlasRegion tget(String region) {
+        //System.out.println(region);
+        System.out.println("!" + Core.atlas.getRegionMap().get(region).toString());
+        return Core.atlas.getRegionMap().get(region);
     }
 }
