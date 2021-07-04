@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
+import static mindustry.Vars.content;
+import static mindustry.Vars.world;
+
 public class Service {
     public static Map loadMap(Fi file) throws IOException {
 
@@ -33,7 +36,95 @@ public class Service {
         return map;
     }
 
+    public static Seq<FakeTile> loadMap(Map map) {
+        return null;
+    }
+
     public static Seq<FakeTile> readMap(InputStream is) throws IOException {
+        try (InputStream ifs = new InflaterInputStream(is); CounterInputStream counter = new CounterInputStream(ifs); DataInputStream stream = new DataInputStream(counter)) {
+            //Parser.Map out = new Parser.Map();
+            Seq<FakeTile> rtn = new Seq<>();
+            SaveIO.readHeader(stream);
+            int version = stream.readInt();
+            SaveVersion ver = SaveIO.getSaveWriter(version);
+            StringMap[] metaOut = {null};
+            ver.region("meta", stream, counter, in -> metaOut[0] = ver.readStringMap(in));
+
+            StringMap meta = metaOut[0];
+
+            //out.name = meta.get("name", "Unknown");
+            //out.author = meta.get("author");
+            //out.description = meta.get("description");
+            //out.tags = meta;
+
+            int width = meta.getInt("width"), height = meta.getInt("height");
+
+            Entry.w = width;
+            Entry.h = height;
+
+//            var floors = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//            var walls = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//            var fgraphics = floors.createGraphics();
+//            var jcolor = new java.awt.Color(0, 0, 0, 64);
+//            int black = 255;
+            CachedTile tile = new CachedTile() {
+                @Override
+                public void setBlock(Block type) {
+                    super.setBlock(type);
+                    FakeTile t = rtn.find(a -> a.x == this.x && a.y == this.y);
+                    if (t != null) {
+                        t.wall = type;
+                    }
+                }
+            };
+
+            ver.region("content", stream, counter, ver::readContentHeader);
+            ver.region("preview_map", stream, counter, in -> ver.readMap(in, new WorldContext() {
+                @Override
+                public void resize(int width, int height) {
+                }
+
+                @Override
+                public boolean isGenerating() {
+                    return false;
+                }
+
+                @Override
+                public void begin() {
+                    world.setGenerating(true);
+                }
+
+                @Override
+                public void end() {
+                    world.setGenerating(false);
+                }
+
+                @Override
+                public void onReadBuilding() {
+                    //read team colors
+                }
+
+                @Override
+                public Tile tile(int index) {
+                    tile.x = (short) (index % width);
+                    tile.y = (short) (index / width);
+                    return tile;
+                }
+
+                @Override
+                public Tile create(int x, int y, int floorID, int overlayID, int wallID) {
+                    rtn.add(new FakeTile(x, y, floorID, overlayID, wallID));
+                    return tile;
+                }
+            }));
+            return rtn;
+        } finally {
+            content.setTemporaryMapper(null);
+        }
+    }
+
+    @Deprecated
+    public static Seq<FakeTile> readMap2(InputStream is) throws IOException {
         Seq<FakeTile> rtn = new Seq<>();
         try (InputStream ifs = new InflaterInputStream(is); CounterInputStream counter = new CounterInputStream(ifs); DataInputStream stream = new DataInputStream(counter)) {
             SaveIO.readHeader(stream);

@@ -42,7 +42,7 @@ public class Drawler {
                 continue;
             }
             try {
-                image.getGraphics().drawImage(Service.getMyPic(t.floor.region.toString()), t.x * 32, t.y * 32, null);
+                image.getGraphics().drawImage(Service.getMyPic(t.floor.region.toString()), t.x * 32, (y_size * 32) - (t.y * 32), null);
             } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
                 break;
@@ -56,7 +56,7 @@ public class Drawler {
                 continue;
             }
             try {
-                image.getGraphics().drawImage(Service.getMyPic(t.overlay.region.toString()), t.x * 32, t.y * 32, null);
+                image.getGraphics().drawImage(Service.getMyPic(t.overlay.region.toString()), t.x * 32, (y_size * 32) - (t.y * 32), null);
             } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
                 break;
@@ -70,7 +70,7 @@ public class Drawler {
                 continue;
             }
             try {
-                image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * 32, t.y * 32, null);
+                image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * 32, (y_size * 32) - (t.y * 32), null);
             } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
                 break;
