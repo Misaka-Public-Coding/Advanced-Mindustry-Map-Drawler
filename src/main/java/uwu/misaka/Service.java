@@ -42,7 +42,6 @@ public class Service {
 
     public static Seq<FakeTile> readMap(InputStream is) throws IOException {
         try (InputStream ifs = new InflaterInputStream(is); CounterInputStream counter = new CounterInputStream(ifs); DataInputStream stream = new DataInputStream(counter)) {
-            //Parser.Map out = new Parser.Map();
             Seq<FakeTile> rtn = new Seq<>();
             SaveIO.readHeader(stream);
             int version = stream.readInt();
@@ -52,21 +51,12 @@ public class Service {
 
             StringMap meta = metaOut[0];
 
-            //out.name = meta.get("name", "Unknown");
-            //out.author = meta.get("author");
-            //out.description = meta.get("description");
-            //out.tags = meta;
 
             int width = meta.getInt("width"), height = meta.getInt("height");
 
             Entry.w = width;
             Entry.h = height;
 
-//            var floors = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//            var walls = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//            var fgraphics = floors.createGraphics();
-//            var jcolor = new java.awt.Color(0, 0, 0, 64);
-//            int black = 255;
             CachedTile tile = new CachedTile() {
                 @Override
                 public void setBlock(Block type) {
@@ -102,6 +92,15 @@ public class Service {
                 @Override
                 public void onReadBuilding() {
                     //read team colors
+                    if (tile.build != null) {
+                        FakeTile t = rtn.find(a -> a.x == tile.x && a.y == tile.y);
+                        if (t != null) {
+                            t.build = tile.build;
+                            if (tile.team() != null) {
+                                t.team = tile.team();
+                            }
+                        }
+                    }
                 }
 
                 @Override
@@ -187,6 +186,14 @@ public class Service {
     }
 
     public static BufferedImage getMyPic(String rg) throws IOException {
-        return ImageIO.read(Parser.imageFiles.get(rg).file());
+        if (rg.equals("error")) {
+            return ImageIO.read(Parser.imageFiles.get("block-border").file());
+        }
+        try {
+            return ImageIO.read(Parser.imageFiles.get(rg).file());
+        } catch (Exception e) {
+            System.out.println(rg);
+            return ImageIO.read(Parser.imageFiles.get("block-border").file());
+        }
     }
 }
