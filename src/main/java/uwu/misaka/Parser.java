@@ -2,10 +2,8 @@ package uwu.misaka;
 
 import arc.Core;
 import arc.files.Fi;
-import arc.graphics.Color;
 import arc.graphics.Texture;
-import arc.graphics.g2d.*;
-import arc.math.Mathf;
+import arc.graphics.g2d.TextureAtlas;
 import arc.struct.ObjectMap;
 import mindustry.Vars;
 import mindustry.core.ContentLoader;
@@ -14,15 +12,9 @@ import mindustry.core.Version;
 import mindustry.core.World;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
-import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.environment.OreBlock;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,8 +23,6 @@ import static mindustry.Vars.world;
 
 public class Parser {
     public ObjectMap<String, BufferedImage> regions;
-    Graphics2D currentGraphics;
-    BufferedImage currentImage;
     public static ObjectMap<String, Fi> imageFiles = new ObjectMap<>();
 
     public Parser() {
@@ -71,40 +61,7 @@ public class Parser {
             texture = reg.page.texture;
         }}));
 
-        Lines.useLegacyLine = true;
         Core.atlas.setErrorRegion("error");
-        Draw.scl = 1f / 4f;
-        Core.batch = new SpriteBatch(0) {
-            @Override
-            protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation) {
-                x += 4;
-                y += 4;
-
-                x *= 4;
-                y *= 4;
-                width *= 4;
-                height *= 4;
-
-                y = currentImage.getHeight() - (y + height / 2f) - height / 2f;
-
-                AffineTransform at = new AffineTransform();
-                at.translate(x, y);
-                at.rotate(-rotation * Mathf.degRad, originX * 4, originY * 4);
-
-                currentGraphics.setTransform(at);
-                BufferedImage image = regions.get(((TextureAtlas.AtlasRegion) region).name);
-                if (!color.equals(Color.white)) {
-                    image = tint(image, color);
-                }
-
-                currentGraphics.drawImage(image, 0, 0, (int) width, (int) height, null);
-            }
-
-            @Override
-            protected void draw(Texture texture, float[] spriteVertices, int offset, int count) {
-                //do nothing
-            }
-        };
 
         for (ContentType type : ContentType.values()) {
             for (Content content : Vars.content.getBy(type)) {
@@ -114,19 +71,6 @@ public class Parser {
                 } catch (Throwable ignored) {
                 }
             }
-        }
-
-        try {
-            BufferedImage image = ImageIO.read(new File("sprites/block_colors.png"));
-
-            for (Block block : Vars.content.blocks()) {
-                block.mapColor.argb8888(image.getRGB(block.id, 0));
-                if (block instanceof OreBlock) {
-                    block.mapColor.set(block.itemDrop.color);
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
 
         world = new World() {
@@ -147,17 +91,4 @@ public class Parser {
         }
     }
 
-    private BufferedImage tint(BufferedImage image, Color color) {
-        BufferedImage copy = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-        Color tmp = new Color();
-        for (int x = 0; x < copy.getWidth(); x++) {
-            for (int y = 0; y < copy.getHeight(); y++) {
-                int argb = image.getRGB(x, y);
-                tmp.argb8888(argb);
-                tmp.mul(color);
-                copy.setRGB(x, y, tmp.argb8888());
-            }
-        }
-        return copy;
-    }
 }
