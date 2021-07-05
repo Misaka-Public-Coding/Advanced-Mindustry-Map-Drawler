@@ -1,5 +1,6 @@
 package uwu.misaka;
 
+import arc.graphics.Color;
 import arc.struct.Seq;
 import arc.struct.StringMap;
 import arc.util.io.CounterInputStream;
@@ -114,5 +115,19 @@ public class Service {
             System.out.println(rg);
             return ImageIO.read(Parser.imageFiles.get("block-border").file());
         }
+    }
+
+    public static BufferedImage tint(BufferedImage image, Color color) {
+        BufferedImage copy = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+        Color tmp = new Color();
+        for (int x = 0; x < copy.getWidth(); x++) {
+            for (int y = 0; y < copy.getHeight(); y++) {
+                int argb = image.getRGB(x, y);
+                tmp.argb8888(argb);
+                tmp.mul(color);
+                copy.setRGB(x, y, tmp.argb8888());
+            }
+        }
+        return copy;
     }
 }

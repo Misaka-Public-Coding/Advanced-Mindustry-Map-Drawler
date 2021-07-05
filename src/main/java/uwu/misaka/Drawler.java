@@ -125,12 +125,11 @@ public class Drawler {
                 }
                 if ((t.wall.teamRegion != null || t.team != null) && t.wall.synthetic()) {
                     if (t.wall.teamRegion.toString().equals("error")) {
-                        image.getGraphics().drawImage(Service.getMyPic(t.wall.teamRegion.toString()), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset + (t.wall.size - 1) * offset, null);
+                        image.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset + (t.wall.size - 1) * offset, null);
                     } else {
-                        image.getGraphics().drawImage(Service.getMyPic(t.wall.teamRegion.toString()), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                        image.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
                     }
                 }
-
             } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
                 break;

@@ -14,7 +14,6 @@ import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.world.Tile;
 
-import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -22,11 +21,9 @@ import java.net.URL;
 import static mindustry.Vars.world;
 
 public class Parser {
-    public ObjectMap<String, BufferedImage> regions;
     public static ObjectMap<String, Fi> imageFiles = new ObjectMap<>();
 
     public Parser() {
-        regions = new ObjectMap<>();
         Version.enabled = false;
         Vars.content = new ContentLoader();
         Vars.content.createBaseContent();
@@ -67,7 +64,6 @@ public class Parser {
             for (Content content : Vars.content.getBy(type)) {
                 try {
                     content.load();
-                    content.loadIcon();
                 } catch (Throwable ignored) {
                 }
             }
