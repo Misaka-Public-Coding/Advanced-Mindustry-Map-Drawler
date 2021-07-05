@@ -105,6 +105,10 @@ public class Service {
         }
     }
 
+    public static boolean picExist(String regionName) {
+        return Parser.imageFiles.get(regionName) != null;
+    }
+
     public static BufferedImage getMyPic(String rg) throws IOException {
         if (rg.startsWith("error")) {
             return ImageIO.read(Parser.imageFiles.get("error").file());

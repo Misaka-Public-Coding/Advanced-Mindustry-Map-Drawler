@@ -3,11 +3,14 @@ package uwu.misaka;
 import arc.graphics.Pixmap;
 import arc.struct.Seq;
 import mindustry.content.Blocks;
-import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.blocks.defense.ForceProjector;
+import mindustry.world.blocks.defense.MendProjector;
+import mindustry.world.blocks.defense.OverdriveProjector;
+import mindustry.world.blocks.defense.turrets.BaseTurret;
 import mindustry.world.blocks.distribution.Conveyor;
-import mindustry.world.blocks.production.Drill;
-import mindustry.world.blocks.production.SolidPump;
-import mindustry.world.blocks.units.Reconstructor;
+import mindustry.world.blocks.distribution.MassDriver;
+import mindustry.world.blocks.power.PowerGenerator;
+import mindustry.world.blocks.production.GenericCrafter;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -120,28 +123,36 @@ public class Drawler {
             }
             try {
 
-                if (t.wall instanceof Turret) {
+                if (t.wall instanceof BaseTurret || t.wall instanceof MassDriver) {
                     image.getGraphics().drawImage(Service.getMyPic("block-" + t.wall.size), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                }
+
+                if (!t.wall.synthetic()) {
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    continue;
+                }
+
+                if (Service.picExist(t.wall.region.toString() + "-bottom")) {
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-bottom"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 }
 
                 image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
 
-                if ((t.wall instanceof Reconstructor)) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                } else if (t.wall instanceof Drill || t.wall instanceof SolidPump) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-rotator"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                } else if (t.wall == Blocks.cultivator) {
+                if (Service.picExist(t.wall.region.toString() + "-middle")) {
                     image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-middle"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                } else if (t.wall instanceof Conveyor) {
-                    if (t.wall != Blocks.plastaniumConveyor) {
-                        image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-0-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                    } else {
-                        image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                    }
                 }
-                if ((t.wall.teamRegion != null || t.team != null) && t.wall.synthetic()) {
+                if (Service.picExist(t.wall.region.toString() + "-rotator")) {
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-rotator"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                }
+
+                if (Service.picExist(t.wall.region.toString() + "-top") && (!(t.wall instanceof GenericCrafter) || t.wall == Blocks.cultivator) && !(t.wall instanceof PowerGenerator) && !(t.wall instanceof OverdriveProjector) && !(t.wall instanceof ForceProjector) && !(t.wall instanceof MendProjector)) {
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                }
+
+                if (t.wall instanceof Conveyor) {
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                }
+                if ((t.wall.teamRegion != null || t.team != null)) {
                     if (t.wall.teamRegion.toString().equals("error")) {
                         image.getGraphics().drawImage(Service.tint(Service.getMyPic("block-border"), t.team.color), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size) + (t.wall.size - 1) * offset, null);
                     } else {
