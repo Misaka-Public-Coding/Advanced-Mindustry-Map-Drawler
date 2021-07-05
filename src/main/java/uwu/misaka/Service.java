@@ -107,13 +107,13 @@ public class Service {
 
     public static BufferedImage getMyPic(String rg) throws IOException {
         if (rg.startsWith("error")) {
-            return ImageIO.read(Parser.imageFiles.get("block-border").file());
+            return ImageIO.read(Parser.imageFiles.get("error").file());
         }
         try {
             return ImageIO.read(Parser.imageFiles.get(rg).file());
         } catch (Exception e) {
             System.out.println(rg);
-            return ImageIO.read(Parser.imageFiles.get("block-border").file());
+            return ImageIO.read(Parser.imageFiles.get("error").file());
         }
     }
 

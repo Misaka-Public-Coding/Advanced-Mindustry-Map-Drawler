@@ -18,17 +18,17 @@ public class Drawler {
     public Seq<FakeTile> tiles = new Seq<>();
     public int x_size;
     public int y_size;
-    public int offset = 32;
+    public static int offset = 32;
 
     public BufferedImage image;
     Pixmap pixmap;
 
     public Drawler(Seq<FakeTile> tt, int w, int h) {
         x_size = w;
-        y_size = h;
+        y_size = h - 1;
         tt.each(t -> tiles.add(t));
-        System.out.println(x_size + " " + y_size);
-        image = new BufferedImage(x_size * offset, y_size * offset, BufferedImage.TYPE_INT_ARGB);
+        System.out.println(x_size + " " + (y_size + 1));
+        image = new BufferedImage(x_size * offset, (1 + y_size) * offset, BufferedImage.TYPE_INT_ARGB);
         pixmap = new Pixmap(x_size * offset, y_size * offset);
         drawFloor();
         drawOverlay();
@@ -69,65 +69,83 @@ public class Drawler {
         }
     }
 
+    private static int getXOffset(int blockSize) {
+        if (blockSize == 3) {
+            return offset;
+        }
+        if (blockSize == 4) {
+            return offset;
+        }
+        if (blockSize == 5) {
+            return 2 * offset;
+        }
+        if (blockSize == 6) {
+            return 2 * offset;
+        }
+        if (blockSize == 7) {
+            return 3 * offset;
+        }
+        if (blockSize == 8 || blockSize == 9) {
+            return 4 * offset;
+        }
+        return 0;
+    }
+
+    private static int getYOffset(int blockSize) {
+        if (blockSize == 2) {
+            return offset;
+        }
+        if (blockSize == 3) {
+            return offset;
+        }
+        if (blockSize == 4) {
+            return 2 * offset;
+        }
+        if (blockSize == 5) {
+            return 2 * offset;
+        }
+        if (blockSize == 6 || blockSize == 7) {
+            return 3 * offset;
+        }
+        if (blockSize == 8 || blockSize == 9) {
+            return 4 * offset;
+        }
+        return 0;
+    }
+
     public void drawBlocks() {
         for (FakeTile t : tiles) {
             if (t.wall == Blocks.air) {
                 continue;
             }
             try {
-                int y_offset = 0;
-
-                if (t.wall.size == 2) {
-                    y_offset = 1 * offset;
-                }
-                if (t.wall.size == 3) {
-                    y_offset = 1 * offset;
-                }
-                if (t.wall.size == 4) {
-                    y_offset = 2 * offset;
-                }
-                if (t.wall.size == 5) {
-                    y_offset = 2 * offset;
-                }
-
-                int x_offset = 0;
-
-                if (t.wall.size == 3) {
-                    x_offset = 1 * offset;
-                }
-                if (t.wall.size == 4) {
-                    x_offset = 1 * offset;
-                }
-                if (t.wall.size == 5) {
-                    x_offset = 2 * offset;
-                }
 
                 if (t.wall instanceof Turret) {
-                    image.getGraphics().drawImage(Service.getMyPic("block-" + t.wall.size), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                    image.getGraphics().drawImage(Service.getMyPic("block-" + t.wall.size), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 }
 
-                image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
 
                 if ((t.wall instanceof Reconstructor)) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 } else if (t.wall instanceof Drill || t.wall instanceof SolidPump) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-rotator"), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-rotator"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 } else if (t.wall == Blocks.cultivator) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-middle"), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-middle"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 } else if (t.wall instanceof Conveyor) {
                     if (t.wall != Blocks.plastaniumConveyor) {
-                        image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-0-0"), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                        image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-0-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                     } else {
-                        image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                        image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                     }
                 }
                 if ((t.wall.teamRegion != null || t.team != null) && t.wall.synthetic()) {
                     if (t.wall.teamRegion.toString().equals("error")) {
-                        image.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset + (t.wall.size - 1) * offset, null);
+                        image.getGraphics().drawImage(Service.tint(Service.getMyPic("block-border"), t.team.color), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size) + (t.wall.size - 1) * offset, null);
                     } else {
-                        image.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), t.x * offset - x_offset, (y_size * offset) - (t.y * offset) - y_offset, null);
+                        image.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                     }
                 }
             } catch (NullPointerException | IOException e) {
