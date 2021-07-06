@@ -9,6 +9,7 @@ import mindustry.world.blocks.defense.OverdriveProjector;
 import mindustry.world.blocks.defense.turrets.BaseTurret;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.distribution.MassDriver;
+import mindustry.world.blocks.environment.TreeBlock;
 import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -92,6 +93,9 @@ public class Drawler {
         if (blockSize == 8 || blockSize == 9) {
             return 4 * offset;
         }
+        if (blockSize == 10) {
+            return 5 * offset;
+        }
         return 0;
     }
 
@@ -114,6 +118,9 @@ public class Drawler {
         if (blockSize == 8 || blockSize == 9) {
             return 4 * offset;
         }
+        if (blockSize == 10) {
+            return 5 * offset;
+        }
         return 0;
     }
 
@@ -123,6 +130,10 @@ public class Drawler {
                 continue;
             }
             try {
+                if (t.wall instanceof TreeBlock) {
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(10), (y_size * offset) - (t.y * offset) - getYOffset(10), null);
+                    continue;
+                }
 
                 if (t.wall instanceof BaseTurret || t.wall instanceof MassDriver) {
                     image.getGraphics().drawImage(Service.getMyPic("block-" + t.wall.size), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
