@@ -9,6 +9,7 @@ import mindustry.world.blocks.defense.OverdriveProjector;
 import mindustry.world.blocks.defense.turrets.BaseTurret;
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.blocks.distribution.MassDriver;
+import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
 
@@ -132,6 +133,16 @@ public class Drawler {
                     continue;
                 }
 
+                if (t.wall != Blocks.plastaniumConveyor && (t.wall instanceof Conveyor)) {
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.name + "-0-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    continue;
+                }
+                if (t.wall instanceof Conduit) {
+                    image.getGraphics().drawImage(Service.getMyPic("conduit-bottom-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    image.getGraphics().drawImage(Service.getMyPic(t.wall.name + "-top-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    continue;
+                }
+
                 if (Service.picExist(t.wall.region.toString() + "-bottom")) {
                     image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-bottom"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 }
@@ -149,7 +160,7 @@ public class Drawler {
                     image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 }
 
-                if (t.wall instanceof Conveyor) {
+                if (t.wall == Blocks.plastaniumConveyor) {
                     image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 }
                 if ((t.wall.teamRegion != null || t.team != null)) {
