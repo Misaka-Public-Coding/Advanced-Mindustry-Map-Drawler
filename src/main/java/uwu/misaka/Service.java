@@ -10,6 +10,7 @@ import mindustry.world.Block;
 import mindustry.world.CachedTile;
 import mindustry.world.Tile;
 import mindustry.world.WorldContext;
+import mindustry.world.blocks.distribution.Conveyor;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -148,5 +149,46 @@ public class Service {
         g.rotate(angle, w / 2, h / 2);
         g.drawRenderedImage(image, null);
         return result;
+    }
+
+    public static String conveyorTextureIdGetter(FakeTile left, FakeTile right, FakeTile up, FakeTile down, FakeTile it) {
+        FakeTile l = null, r = null, d = null;
+        if (it.build != null) {
+            if (it.build.rotation() == 0) {
+                d = left;
+                l = up;
+                r = down;
+            }
+            if (it.build.rotation() == 1) {
+                d = down;
+                l = left;
+                r = right;
+            }
+            if (it.build.rotation() == 2) {
+                d = right;
+                l = down;
+                r = up;
+            }
+            if (it.build.rotation() == 3) {
+                d = up;
+                l = right;
+                r = left;
+            }
+        }
+        if (left != null && right != null && down != null) {
+            if (l.wall instanceof Conveyor && r.wall instanceof Conveyor && d.wall instanceof Conveyor) {
+                return "-3-0";
+            }
+            if (l.wall instanceof Conveyor && r.wall instanceof Conveyor) {
+                return "-4-0";
+            }
+            if ((l.wall instanceof Conveyor || r.wall instanceof Conveyor) && (d.wall instanceof Conveyor)) {
+                return "-2-0";
+            }
+            if ((l.wall instanceof Conveyor || r.wall instanceof Conveyor) && !(d.wall instanceof Conveyor)) {
+                return "-1-0";
+            }
+        }
+        return "-0-0";
     }
 }
