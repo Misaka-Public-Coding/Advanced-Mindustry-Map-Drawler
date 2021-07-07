@@ -129,14 +129,13 @@ public class Drawler {
             if (t.wall == Blocks.air) {
                 continue;
             }
+            BufferedImage texturka = new BufferedImage(t.wall.size * offset, t.wall.size * offset, BufferedImage.TYPE_INT_ARGB);
             try {
                 if (t.wall instanceof TreeBlock) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(10), (y_size * offset) - (t.y * offset) - getYOffset(10), null);
+                    texturka = new BufferedImage(10 * offset, 10 * offset, 2);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), 0, 0, null);
+                    image.getGraphics().drawImage(texturka, t.x * offset - getXOffset(10), (y_size * offset) - (t.y * offset) - getYOffset(10), null);
                     continue;
-                }
-
-                if (t.wall instanceof BaseTurret || t.wall instanceof MassDriver) {
-                    image.getGraphics().drawImage(Service.getMyPic("block-" + t.wall.size), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                 }
 
                 if (!t.wall.synthetic()) {
@@ -144,43 +143,51 @@ public class Drawler {
                     continue;
                 }
 
+                if (t.wall instanceof BaseTurret || t.wall instanceof MassDriver) {
+                    texturka.getGraphics().drawImage(Service.getMyPic("block-" + t.wall.size), 0, 0, null);
+                }
+
                 if (t.wall != Blocks.plastaniumConveyor && (t.wall instanceof Conveyor)) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.name + "-0-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.name + "-0-0"), 0, 0, null);
+                    image.getGraphics().drawImage(texturka, t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                     continue;
                 }
+
                 if (t.wall instanceof Conduit) {
-                    image.getGraphics().drawImage(Service.getMyPic("conduit-bottom-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.name + "-top-0"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    texturka.getGraphics().drawImage(Service.getMyPic("conduit-bottom-0"), 0, 0, null);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.name + "-top-0"), 0, 0, null);
+                    image.getGraphics().drawImage(texturka, t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                     continue;
                 }
 
                 if (Service.picExist(t.wall.region.toString() + "-bottom")) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-bottom"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-bottom"), 0, 0, null);
                 }
 
-                image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), 0, 0, null);
 
                 if (Service.picExist(t.wall.region.toString() + "-middle")) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-middle"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-middle"), 0, 0, null);
                 }
                 if (Service.picExist(t.wall.region.toString() + "-rotator")) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-rotator"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-rotator"), 0, 0, null);
                 }
 
                 if (Service.picExist(t.wall.region.toString() + "-top") && (!(t.wall instanceof GenericCrafter) || t.wall == Blocks.cultivator) && !(t.wall instanceof PowerGenerator) && !(t.wall instanceof OverdriveProjector) && !(t.wall instanceof ForceProjector) && !(t.wall instanceof MendProjector)) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString() + "-top"), 0, 0, null);
                 }
 
                 if (t.wall == Blocks.plastaniumConveyor) {
-                    image.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                    texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), 0, 0, null);
                 }
                 if ((t.wall.teamRegion != null || t.team != null)) {
                     if (t.wall.teamRegion.toString().equals("error")) {
-                        image.getGraphics().drawImage(Service.tint(Service.getMyPic("block-border"), t.team.color), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size) + (t.wall.size - 1) * offset, null);
+                        texturka.getGraphics().drawImage(Service.tint(Service.getMyPic("block-border"), t.team.color), 0, texturka.getHeight() - 32, null);
                     } else {
-                        image.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
+                        texturka.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), 0, 0, null);
                     }
                 }
+                image.getGraphics().drawImage(texturka, t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
             } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
                 break;
