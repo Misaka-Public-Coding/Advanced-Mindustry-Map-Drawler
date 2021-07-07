@@ -15,6 +15,7 @@ import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.blocks.production.GenericCrafter;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -149,6 +150,8 @@ public class Drawler {
 
                 if (t.wall != Blocks.plastaniumConveyor && (t.wall instanceof Conveyor)) {
                     texturka.getGraphics().drawImage(Service.getMyPic(t.wall.name + "-0-0"), 0, 0, null);
+                    texturka = Service.rotate(texturka, Math.toRadians(90 * t.build.rotation()), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+                    texturka.getGraphics().drawImage(Service.tint(Service.getMyPic("block-border"), t.team.color), 0, texturka.getHeight() - 32, null);
                     image.getGraphics().drawImage(texturka, t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                     continue;
                 }
@@ -179,6 +182,10 @@ public class Drawler {
 
                 if (t.wall == Blocks.plastaniumConveyor) {
                     texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), 0, 0, null);
+                    texturka = Service.rotate(texturka, Math.toRadians(90 * t.build.rotation()), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+                }
+                if (t.wall.rotate && t.build != null && t.build.rotation() != 0) {
+                    texturka = Service.rotate(texturka, Math.toRadians(0), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
                 }
                 if ((t.wall.teamRegion != null || t.team != null)) {
                     if (t.wall.teamRegion.toString().equals("error")) {
@@ -187,6 +194,7 @@ public class Drawler {
                         texturka.getGraphics().drawImage(Service.tint(Service.getMyPic(t.wall.teamRegion.toString()), t.team.color), 0, 0, null);
                     }
                 }
+
                 image.getGraphics().drawImage(texturka, t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
             } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
