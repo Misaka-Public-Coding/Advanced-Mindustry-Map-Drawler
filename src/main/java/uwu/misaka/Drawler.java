@@ -150,7 +150,13 @@ public class Drawler {
 
                 if (t.wall != Blocks.plastaniumConveyor && (t.wall instanceof Conveyor)) {
                     texturka.getGraphics().drawImage(Service.getMyPic(t.wall.name + Service.conveyorTextureIdGetter(tiles.find(a -> a.x + 1 == t.x && a.y == t.y), tiles.find(a -> a.x - 1 == t.x && a.y == t.y), tiles.find(a -> a.x == t.x && a.y - 1 == t.y), tiles.find(a -> a.x == t.x && a.y + 1 == t.y), t)), 0, 0, null);
-                    texturka = Service.rotate(texturka, Math.toRadians(90 * t.build.rotation()), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+                    int rotation = t.build.rotation();
+                    if (rotation == 1) {
+                        rotation = 3;
+                    } else if (rotation == 3) {
+                        rotation = 1;
+                    }
+                    texturka = Service.rotate(texturka, Math.toRadians(90 * rotation), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
                     texturka.getGraphics().drawImage(Service.tint(Service.getMyPic("block-border"), t.team.color), 0, texturka.getHeight() - 32, null);
                     image.getGraphics().drawImage(texturka, t.x * offset - getXOffset(t.wall.size), (y_size * offset) - (t.y * offset) - getYOffset(t.wall.size), null);
                     continue;
@@ -183,7 +189,13 @@ public class Drawler {
 
                 if (t.wall == Blocks.plastaniumConveyor) {
                     texturka.getGraphics().drawImage(Service.getMyPic(t.wall.region.toString()), 0, 0, null);
-                    texturka = Service.rotate(texturka, Math.toRadians(90 * t.build.rotation()), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+                    int rotation = t.build.rotation();
+                    if (rotation == 1) {
+                        rotation = 3;
+                    } else if (rotation == 3) {
+                        rotation = 1;
+                    }
+                    texturka = Service.rotate(texturka, Math.toRadians(90 * rotation), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
                 }
                 if (t.wall.rotate && t.build != null && t.build.rotation() != 0) {
                     texturka = Service.rotate(texturka, Math.toRadians(0), GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());

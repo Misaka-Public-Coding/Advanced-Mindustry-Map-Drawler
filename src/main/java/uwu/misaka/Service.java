@@ -146,7 +146,7 @@ public class Service {
         BufferedImage result = gc.createCompatibleImage(neww, newh, transparency);
         Graphics2D g = result.createGraphics();
         g.translate((neww - w) / 2, (newh - h) / 2);
-        g.rotate(angle, w / 2, h / 2);
+        g.rotate(angle, w / 2f, h / 2f);
         g.drawRenderedImage(image, null);
         return result;
     }
@@ -175,20 +175,52 @@ public class Service {
                 r = left;
             }
         }
-        if (left != null && right != null && down != null) {
-            if (l.wall instanceof Conveyor && r.wall instanceof Conveyor && d.wall instanceof Conveyor) {
+        if (l != null && r != null && d != null) {
+            if (l.wall instanceof Conveyor && checkRotation(it, l) && r.wall instanceof Conveyor && checkRotation(it, r) && d.wall instanceof Conveyor && checkRotation(it, d)) {
                 return "-3-0";
             }
-            if (l.wall instanceof Conveyor && r.wall instanceof Conveyor) {
+            if (l.wall instanceof Conveyor && checkRotation(it, l) && r.wall instanceof Conveyor && checkRotation(it, r)) {
                 return "-4-0";
             }
-            if ((l.wall instanceof Conveyor || r.wall instanceof Conveyor) && (d.wall instanceof Conveyor)) {
+            if (((l.wall instanceof Conveyor && checkRotation(it, l)) || (r.wall instanceof Conveyor && checkRotation(it, r))) && (d.wall instanceof Conveyor) && checkRotation(it, d)) {
                 return "-2-0";
             }
-            if ((l.wall instanceof Conveyor || r.wall instanceof Conveyor) && !(d.wall instanceof Conveyor)) {
+            if ((l.wall instanceof Conveyor && checkRotation(it, l) || r.wall instanceof Conveyor && checkRotation(it, r))) {
                 return "-1-0";
             }
         }
         return "-0-0";
     }
+
+    private static boolean checkRotation(FakeTile c, FakeTile t) {
+
+        if (c.x == t.x) {
+            if (c.y > t.y) {
+                if (t.build.rotation == 1) {
+                    return true;
+                }
+            }
+            if (c.y < t.y) {
+                if (t.build.rotation == 3) {
+                    return true;
+                }
+            }
+        }
+        if (c.y == t.y) {
+            if (c.x > t.x) {
+                if (t.build.rotation == 0) {
+                    return true;
+                }
+            }
+            if (c.x < t.x) {
+                if (t.build.rotation == 2) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    ;
 }
