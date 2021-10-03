@@ -25,9 +25,10 @@ public class Drawler {
     public int x_size;
     public int y_size;
     public static int offset = 32;
+    public int outside_offset = 8;
 
     public BufferedImage image;
-    Pixmap pixmap;
+    public BufferedImage image_output;
 
     public Drawler(Seq<FakeTile> tt, int w, int h) {
         x_size = w;
@@ -35,12 +36,13 @@ public class Drawler {
         tt.each(t -> tiles.add(t));
         System.out.println(x_size + " " + (y_size + 1));
         image = new BufferedImage(x_size * offset, (1 + y_size) * offset, BufferedImage.TYPE_INT_ARGB);
-        pixmap = new Pixmap(x_size * offset, y_size * offset);
+        image_output = new BufferedImage(x_size * outside_offset, (1 + y_size) * outside_offset, BufferedImage.TYPE_INT_ARGB);
         drawFloor();
         drawOverlay();
         drawBlocks();
+        image_output.getGraphics().drawImage(image,0,0,x_size * outside_offset, (1 + y_size) * outside_offset,null);
         try {
-            ImageIO.write(image, "png", new File("baka.png"));
+            ImageIO.write(image_output, "png", new File("baka.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
