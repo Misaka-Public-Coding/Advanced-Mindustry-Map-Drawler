@@ -12,10 +12,10 @@ repositories {
 }
 
 ext{
-    mindustryVersion = 'v127.2'
+    mindustryVersion = 'v138'
 }
 
 dependencies {
-    compile "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compile "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    implementation "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }
